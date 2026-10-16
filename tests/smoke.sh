@@ -9,7 +9,11 @@ trap 'rm -rf "$temporary"' EXIT
 prefix="$temporary/toolchain"
 export GOML_HOME="$temporary/home"
 
-sh "$repository_root/install.sh" "$@" --prefix "$prefix"
+if test -n "${GOML_INSTALL_SCRIPT_URL:-}"; then
+    curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors "$GOML_INSTALL_SCRIPT_URL" | sh -s -- "$@" --prefix "$prefix"
+else
+    cat "$repository_root/install.sh" | sh -s -- "$@" --prefix "$prefix"
+fi
 test -f "$prefix/lib/compiler/compiler-world-v2.gaf"
 test ! -e "$prefix/.goml-install"
 "$prefix/bin/goml" version
