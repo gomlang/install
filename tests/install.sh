@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -Eeuo pipefail
 
 repository_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "$repository_root/tests/common.sh"
 temporary="$(mktemp -d)"
+temporary="$(cd "$temporary" && pwd -P)"
 trap 'rm -rf "$temporary"' EXIT
+trap 'printf "installer test failed at line %s: %s\n" "$LINENO" "$BASH_COMMAND" >&2' ERR
 installer="$repository_root/install.sh"
 prefix="$temporary/prefix with spaces and 'quote'"
 export GOML_INSTALL_TEST_VERSION="$(cat "$repository_root/tests/fixtures/version")"

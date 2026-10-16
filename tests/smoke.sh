@@ -4,6 +4,7 @@ set -euo pipefail
 
 repository_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 temporary="$(mktemp -d)"
+temporary="$(cd "$temporary" && pwd -P)"
 trap 'rm -rf "$temporary"' EXIT
 prefix="$temporary/toolchain"
 export GOML_HOME="$temporary/home"
