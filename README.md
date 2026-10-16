@@ -7,7 +7,7 @@ Install the [GoML](https://github.com/gomlang/goml) toolchain on Linux amd64 or 
 Install Go 1.26 or newer and make it available on `PATH`. The installer also requires a POSIX shell, curl, tar, and sha256sum or shasum.
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/gomlang/install/main/install.sh -o install-goml.sh && sh install-goml.sh
+curl -fsSL https://gomlang.github.io/install/install.sh | sh
 export PATH="${GOML_HOME:-$HOME/.goml}/bin:$PATH"
 goml version
 ```
@@ -17,10 +17,10 @@ The script selects the latest published release from `gomlang/goml`, verifies it
 To select a release and installation directory:
 
 ```sh
-sh install-goml.sh --version X.Y.Z --prefix "$HOME/tools/goml"
+curl -fsSL https://gomlang.github.io/install/install.sh | sh -s -- --version X.Y.Z --prefix "$HOME/tools/goml"
 ```
 
-`--version` also accepts a leading `v`. Run `sh install-goml.sh --help` for the available options.
+`--version` also accepts a leading `v`. Pass `--help` after `sh -s --` for the available options.
 
 Create and run a project after installation:
 
@@ -52,4 +52,4 @@ To download and install a real release into a temporary directory, create a proj
 bash tests/smoke.sh
 ```
 
-Pass `--version X.Y.Z` to the smoke test to select a release. GitHub Actions runs both test suites on Linux amd64 and macOS arm64.
+Pass `--version X.Y.Z` to the smoke test to select a release. Set `GOML_INSTALL_SCRIPT_URL` to test a hosted script. GitHub Actions runs both test suites on Linux amd64 and macOS arm64, publishes the tested installer to [GitHub Pages](https://gomlang.github.io/install/), and checks installation from the published URL.

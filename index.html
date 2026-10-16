@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Install the GoML toolchain on Linux amd64 and macOS arm64.">
+  <title>Install GoML</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #101820; color: #e8eef2; }
+    body { max-width: 820px; margin: 0 auto; padding: 64px 24px; line-height: 1.7; }
+    nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 72px; }
+    nav strong { font-size: 24px; letter-spacing: -1px; }
+    a { color: #8edac5; text-underline-offset: 4px; }
+    h1 { font-size: clamp(40px, 8vw, 64px); line-height: 1.1; letter-spacing: -2px; margin-bottom: 24px; }
+    h2 { font-size: 22px; margin-top: 40px; }
+    p { color: #b6c4ce; }
+    pre { background: #182630; border: 1px solid #32434f; border-radius: 12px; padding: 22px; overflow-x: auto; line-height: 1.8; }
+    code { font-family: ui-monospace, monospace; font-size: 14px; }
+    pre code { color: #d6f7eb; }
+    footer { margin-top: 64px; border-top: 1px solid #32434f; padding-top: 24px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <nav aria-label="Main navigation"><strong>GoML</strong><a href="https://github.com/gomlang/install">Installer source</a></nav>
+  <main>
+    <h1>Install GoML.</h1>
+    <p>A statically typed language with Rust-like syntax that compiles to Go.</p>
+    <p>For Linux amd64 and macOS arm64. Install <a href="https://go.dev/dl/">Go 1.26 or newer</a> first, then run:</p>
+    <pre><code>curl -fsSL https://gomlang.github.io/install/install.sh | sh</code></pre>
+    <p>The installer downloads the latest release, verifies its checksum, and initializes the toolchain. It requires curl, tar, and sha256sum or shasum.</p>
+    <h2>Start a project</h2>
+    <p>Add the PATH command printed by the installer to your shell configuration. For the default installation:</p>
+    <pre><code>export PATH="${GOML_HOME:-$HOME/.goml}/bin:$PATH"
+goml new hello
+cd hello
+goml run</code></pre>
+    <h2>Choose a version or directory</h2>
+    <pre><code>curl -fsSL https://gomlang.github.io/install/install.sh | sh -s -- \
+  --version X.Y.Z --prefix "$HOME/tools/goml"</code></pre>
+    <p>Replace <code>X.Y.Z</code> with a <a href="https://github.com/gomlang/goml/releases">published version</a>. Run the installer again to upgrade. Your dependency cache is preserved.</p>
+  </main>
+  <footer><a href="https://github.com/gomlang/goml">GoML on GitHub</a> · <a href="https://github.com/gomlang/install#readme">Installation documentation</a></footer>
+</body>
+</html>
