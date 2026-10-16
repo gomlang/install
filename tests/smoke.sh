@@ -14,7 +14,6 @@ if test -n "${GOML_INSTALL_SCRIPT_URL:-}"; then
 else
     cat "$repository_root/install.sh" | sh -s -- "$@" --prefix "$prefix"
 fi
-test -f "$prefix/lib/compiler/compiler-world-v2.gaf"
 test ! -e "$prefix/.goml-install"
 "$prefix/bin/goml" version
 (

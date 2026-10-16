@@ -36,7 +36,10 @@ case "$1" in
         test "${GOML_INSTALL_TEST_FINALIZE_FAIL:-0}" = 0
         if test "${GOML_INSTALL_TEST_SKIP_WORLD:-0}" = 0; then
             mkdir -p "$3/lib/compiler"
-            printf '%s\n' world > "$3/lib/compiler/compiler-world-v2.gaf"
+            printf '%s\n' world > "$3/lib/compiler/${GOML_INSTALL_TEST_WORLD_NAME:-compiler-world.gaf}"
+            if test "${GOML_INSTALL_TEST_EXTRA_WORLD:-0}" = 1; then
+                printf '%s\n' world > "$3/lib/compiler/extra.gaf"
+            fi
         fi
         ;;
     *) exit 1 ;;
@@ -65,11 +68,16 @@ cp "$GOML_INSTALL_TEST_RELEASE_DIR/SHA256SUMS" "$temporary/checksums"
 
 sh "$installer" --help > "$temporary/help"
 sh "$installer" --prefix "$prefix" > "$temporary/install.log"
-test -f "$prefix/lib/compiler/compiler-world-v2.gaf"
+test -f "$prefix/lib/compiler/compiler-world.gaf"
 test ! -e "$prefix/.goml-install"
 grep -F '/releases/latest' "$GOML_INSTALL_TEST_DOWNLOADS" >/dev/null
 path_command="$(sed -n '/^  export PATH=/p' "$temporary/install.log")"
 test "$(sh -c "$path_command; command -v goml")" = "$prefix/bin/goml"
+
+GOML_INSTALL_TEST_WORLD_NAME=compiler-world-v2.gaf sh "$installer" \
+    --version "$GOML_INSTALL_TEST_VERSION" --prefix "$temporary/previous-format" \
+    > "$temporary/previous-format.log"
+test -f "$temporary/previous-format/lib/compiler/compiler-world-v2.gaf"
 
 mkdir -p "$prefix/cache" "$prefix/lib/custom"
 printf '%s\n' retained > "$prefix/cache/retained"
@@ -107,6 +115,7 @@ reject_install download env GOML_INSTALL_TEST_DOWNLOAD_FAIL=1
 reject_install version env GOML_INSTALL_TEST_BINARY_VERSION=invalid
 reject_install finalize env GOML_INSTALL_TEST_FINALIZE_FAIL=1
 reject_install missing-world env GOML_INSTALL_TEST_SKIP_WORLD=1
+reject_install duplicate-world env GOML_INSTALL_TEST_EXTRA_WORLD=1
 
 printf '%s\n' invalid > "$GOML_INSTALL_TEST_RELEASE_DIR/SHA256SUMS"
 reject_install missing-checksum env
@@ -196,6 +205,6 @@ done
 env PATH="$temporary/fallback-bin" GOML_INSTALL_TEST_OS=Darwin GOML_INSTALL_TEST_ARCH=arm64 \
     sh "$installer" --version "$GOML_INSTALL_TEST_VERSION" --prefix "$temporary/mac" \
     > "$temporary/mac.log"
-test -f "$temporary/mac/lib/compiler/compiler-world-v2.gaf"
+test -f "$temporary/mac/lib/compiler/compiler-world.gaf"
 grep -F "goml-$GOML_INSTALL_TEST_VERSION-darwin-arm64.tar.gz" "$GOML_INSTALL_TEST_DOWNLOADS" >/dev/null
 printf '%s\n' 'installer tests passed'
