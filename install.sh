@@ -198,7 +198,8 @@ main() {
     done
     printf 'Initializing GoML in %s...\n' "$prefix"
     "$prefix/bin/goml" __toolchain-finalize --prefix "$prefix"
-    test -f "$prefix/lib/compiler/compiler-world-v2.gaf" || fail 'toolchain initialization did not create a compiler world'
+    set -- "$prefix"/lib/compiler/*.gaf
+    test "$#" = 1 && test -f "$1" || fail 'toolchain initialization did not create exactly one compiler world'
     "$prefix/bin/goml" version
     install_complete=1
     path_entry=$(printf '%s' "$prefix/bin" | sed "s/'/'\\\\''/g")
