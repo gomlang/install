@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Install on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version: '1.26'
+          cache: false
+      - name: Check shell syntax
+        run: |
+          sh -n install.sh tests/fixtures/curl
+          bash -n tests/common.sh tests/install.sh tests/smoke.sh
+      - name: Test installation and rollback
+        run: bash tests/install.sh
+      - name: Install and exercise the latest release
+        run: bash tests/smoke.sh

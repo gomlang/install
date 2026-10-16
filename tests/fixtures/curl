@@ -1,0 +1,28 @@
+#!/bin/sh
+
+set -eu
+
+output=
+url=
+while test "$#" -gt 0; do
+    case "$1" in
+        --output) output=$2; shift 2 ;;
+        --write-out|--proto|--proto-redir|--retry) shift 2 ;;
+        --fail|--silent|--show-error|--location|--tlsv1.2) shift ;;
+        https://github.com/gomlang/goml/releases/*) url=$1; shift ;;
+        *) printf 'unexpected curl argument: %s\n' "$1" >&2; exit 1 ;;
+    esac
+done
+printf '%s\n' "$url" >> "$GOML_INSTALL_TEST_DOWNLOADS"
+if test "${GOML_INSTALL_TEST_DOWNLOAD_FAIL:-0}" = 1; then
+    exit 22
+fi
+case "$url" in
+    https://github.com/gomlang/goml/releases/latest)
+        printf 'https://github.com/gomlang/goml/releases/tag/v%s' "$GOML_INSTALL_TEST_VERSION"
+        ;;
+    "https://github.com/gomlang/goml/releases/download/v$GOML_INSTALL_TEST_VERSION/"*)
+        cp "$GOML_INSTALL_TEST_RELEASE_DIR/${url##*/}" "$output"
+        ;;
+    *) printf 'unexpected download URL: %s\n' "$url" >&2; exit 1 ;;
+esac
